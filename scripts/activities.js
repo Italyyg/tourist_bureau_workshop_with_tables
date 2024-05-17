@@ -102,18 +102,96 @@ let activities = [
 ];
 
 window.onload = function () {
-    
 
+    //run the code that populates the category dropdown
     initCategoriesDropdown();
 
+    //get the catergory dropdown
+    let catergoriesDropdown = document.querySelector("#categoriesSelect");
+
+    //make sure we run the code to work the activities when categories select
+    catergoriesDropdown.addEventListener("change", getActivities);
+
+}
+function getActivities(event) {
+
+    //get the selected category from the dropdown which is also the event.target
+    let selectedCategory = event.target.value;
+
+    let matchingActivities = activities.filter((activity) => {
+
+        //returning the every single option that it goes through and choosing the 
+        //category and if it mathes the value in the selectedCategory then it returns it.
+        return activity.category === selectedCategory;
+
+
+
+    })
+    //getting a hold of the table body so we can add rows to it for all the activities
+    let tableBody = document.querySelector("#activitiesTableBody");
+    //set the innterHTML to "" which clear it out
+    tableBody.innerHTML = "";
+
+    matchingActivities.forEach((activity) => {
+
+        //running the function with the table that we grabbed from the HTML 
+        //now the "acitivity" is going throught the list individually
+        buildTableRow(tableBody, activity);
+
+
+    })
+
+    function buildTableRow(tableBody, data) {
+
+        //create the row to hold the data
+        let newRow = tableBody.insertRow(-1);
+
+        //loop over all the properties in the object and create a cell for them 
+        //data is the whole thing (the object) and property is grabbing them singularly 
+        for (let property in data) {
+
+            //grabbing the strings individually and fitting them in a cell
+            let newTD = newRow.insertCell();
+            newTD.innerText = data[property];
+        }
+
+ }
 
 }
 
 
 
 function initCategoriesDropdown() {
+    //we are grabbing the dropdwon from the HTML page to work with it
+    let catergoriesDropdown = document.querySelector("#categoriesSelect");
+    //creating a element for the default option
+    let defaultOption = document.createElement("option");
 
-    
+    //this is what we get back in the js when we ask for it 
+    defaultOption.value = ""
+
+    //this is what the user actually selects in the dropdown
+    defaultOption.textContent = "Select a Category";
+
+    //add the option we created to the dropdown
+    catergoriesDropdown.appendChild(defaultOption);
+
+    //write a loop to work with each individual category and build an option for it
+    categories.forEach((category) => {
+
+        //create the new option for the category we are on in the loop
+        let newOption = document.createElement("option");
+
+        //set the value for the option
+        newOption.value = category;
+
+        //set what the user sees 
+        newOption.textContent = category;
+
+        catergoriesDropdown.appendChild(newOption);
+
+
+    })
 
 }
 
@@ -131,7 +209,7 @@ function getActivitiesInCategory(activities, category) {
             matching.push(activities[i]);
         }
     }
-    
+
     //return all the matching menu items
     return matching;
 }
